@@ -29,7 +29,7 @@ class LLMResponseError(Exception):
 
 # Initialize the async clients
 settings = get_settings()
-anthropic_client = AsyncAnthropic(api_key=settings.anthropic_api_key)
+anthropic_client = AsyncAnthropic(api_key=settings.anthropic_api_key) if settings.anthropic_api_key else None
 openai_client = AsyncOpenAI(api_key=settings.openai_api_key) if settings.openai_api_key else None
 
 
@@ -247,6 +247,9 @@ async def generate_llm_meal_plan_anthropic(
     )
 
     logger.info(f"Generating meal plan with Anthropic Claude ({model}) for user {user_id}")
+
+    if anthropic_client is None:
+        raise RuntimeError("Anthropic API key not configured; set ANTHROPIC_API_KEY to enable Claude meal plans.")
 
     message = await anthropic_client.messages.create(
         model=model,
