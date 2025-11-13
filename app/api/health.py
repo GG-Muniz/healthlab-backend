@@ -15,6 +15,15 @@ from ..models.health_pillars import get_all_pillars
 router = APIRouter(prefix="/health", tags=["health"])
 
 
+@router.get("", include_in_schema=False)
+@router.get("/", include_in_schema=False)
+async def health_status():
+    """
+    Lightweight heartbeat endpoint used by deployment health checks.
+    """
+    return {"status": "ok"}
+
+
 class PillarResponse(BaseModel):
     """
     Schema for health pillar response.
